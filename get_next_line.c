@@ -6,57 +6,67 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/13 17:06:14 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/13 19:23:53 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
-#include <stdio.h>
-#include <unistd.h>
 #include "get_next_line.h"
+
+char *add_buffer(int fd, char *text)
+{
+    // 1. read the file until \n is in the variable text
+    char *buffer;
+    int len_byte;
+
+    buffer = calloc(BUFFER_SIZE+1, sizeof(char));
+    len_byte = -1;
+
+    while (len_byte != 0 && !ft_strchr(text, '\n') )
+    {
+        len_byte = read(fd, buffer, BUFFER_SIZE);
+        
+        //printf("TEXT BEFORE JOIN: %s\n\n", text);
+        //printf("BUFFER IS: %s\n\n", buffer);
+
+        if (len_byte < 0)
+        {
+            free(buffer);
+            return (NULL); 
+        }
+        text = ft_strjoin(text, buffer);
+
+        //printf("TEXT AFTER JOIN: %s\n\n", text);
+    }
+    free(buffer);
+    return (text);
+}
+
+char *get_line(char *text)
+{
+    // 2. fill the variable line
+    char *line;
+    int len;
+
+    len = 0;
+    while (text[len] != '\n')
+        len++;
+    len++;
+    line = calloc(len + 1, sizeof(char));
+    ft_strlcpy(line, text, len+1);
+  return(line);
+}
 
 char *get_next_line(int fd)
 {
-    static char *text;
-    char *buffer;
-    int byte;
+    static char *text = NULL;
+
     char *line;
 
     if (!text)
-        text = calloc(2000, sizeof(char));
-    line = calloc(2000, sizeof(char));
-    buffer = calloc(BUFFER_SIZE, sizeof(char));
-
-    byte = 1;
-
-    // 1. read the file until \n is in the variable text
-    while (byte != 0 && !ft_strchr(text, '\n') )
-    {
-        byte = read(fd, buffer, 300);
-        //printf("TEXT BEFORE JOIN: %s\n\n", text);
-        //printf("BUFFER IS: %s\n\n", buffer);
-        text = ft_strjoin(text, buffer);
-        //printf("TEXT AFTER JOIN: %s\n\n", text);
-    }
-
-    // 2. fill the variable line
-    if (ft_strchr(text, '\n'))
-    {
-        int i;
+       text = calloc(2000, sizeof(char));
     
-        i = 0;
-        while (text[i] != '\n' && text[i])
-        {
-            line[i] = text[i];
-            i++;
-        }
-        if (text[i] == '\n')
-        {
-            line[i] = text[i];
-            i++;
-        }
-    }  
-    //printf("LINE: %s\n\n", line); 
+    text = add_buffer(fd, text);
+    line = get_line(text);
    
     // 3. delete line from buffer
     //printf("TEXT BEFORE: %s\n\n", text); 
@@ -74,8 +84,8 @@ int main (int argc, char **argv)
     printf("|%s|\n\n", get_next_line(fd)); 
     printf("|%s|\n\n", get_next_line(fd)); 
     printf("|%s|\n\n", get_next_line(fd)); 
-    printf("|%s|\n\n", get_next_line(fd)); 
-    printf("|%s|\n\n", get_next_line(fd)); 
-    printf("|%s|\n\n", get_next_line(fd)); 
+    printf("|%s|\n\n", get_next_line(fd));
+    printf("|%s|\n\n", get_next_line(fd));
+    printf("|%s|\n\n", get_next_line(fd));
     //gcc -Wall -Werror -Wextra -D BUFFER_SIZE=xyz get_next_line.c get_next_line_utils.c && ./a.out
 }
