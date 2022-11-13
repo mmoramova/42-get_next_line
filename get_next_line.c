@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/13 19:23:53 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/13 22:55:47 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ char *add_buffer(int fd, char *text)
     char *buffer;
     int len_byte;
 
-    buffer = calloc(BUFFER_SIZE+1, sizeof(char));
+    buffer = ft_calloc(BUFFER_SIZE+1, sizeof(char));
+    if(!buffer)
+        return(NULL);
     len_byte = -1;
 
     while (len_byte != 0 && !ft_strchr(text, '\n') )
@@ -41,7 +43,7 @@ char *add_buffer(int fd, char *text)
     return (text);
 }
 
-char *get_line(char *text)
+char *get_lines(char *text)
 {
     // 2. fill the variable line
     char *line;
@@ -51,32 +53,44 @@ char *get_line(char *text)
     while (text[len] != '\n')
         len++;
     len++;
-    line = calloc(len + 1, sizeof(char));
+    line = ft_calloc(len + 1, sizeof(char));
+    if(!line)
+        return(NULL);
     ft_strlcpy(line, text, len+1);
   return(line);
 }
 
+char *update_text(char *text, size_t len)
+{
+    // 3. delete line from buffer
+    char *new_text;
+
+    //printf("TEXT BEFORE: %s\n\n", text); 
+    //printf("SIZE OF LINE: %d\n\n", len);
+    //printf("TEXT: %s\n\n", new_text);
+    new_text = ft_substr(text, len, ft_strlen(text) - len);
+    free(text);
+    return (new_text);
+}
+
 char *get_next_line(int fd)
 {
+    char        *line;
     static char *text = NULL;
 
-    char *line;
-
     if (!text)
-       text = calloc(2000, sizeof(char));
+       text = ft_calloc(3000, sizeof(char));
     
     text = add_buffer(fd, text);
-    line = get_line(text);
-   
-    // 3. delete line from buffer
-    //printf("TEXT BEFORE: %s\n\n", text); 
-    text = ft_strchr(text, '\n'); //+1 TODO;
-    //printf("TEXT AFTER 3: %s\n\n", text);
-
+    if (!text)
+        return(NULL);
+    line = get_lines(text);
+    text = update_text(text, strlen(line));
+ 
     return (line);
 }
 
-int main (int argc, char **argv)
+/*int main (int argc, char **argv)
 {
     int fd;
     
@@ -87,5 +101,8 @@ int main (int argc, char **argv)
     printf("|%s|\n\n", get_next_line(fd));
     printf("|%s|\n\n", get_next_line(fd));
     printf("|%s|\n\n", get_next_line(fd));
+    printf("|%s|\n\n", get_next_line(fd));
+    printf("|%s|\n\n", get_next_line(fd));
+    printf("|%s|\n\n", get_next_line(fd));
     //gcc -Wall -Werror -Wextra -D BUFFER_SIZE=xyz get_next_line.c get_next_line_utils.c && ./a.out
-}
+}*/

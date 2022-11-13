@@ -6,13 +6,10 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:45:37 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/13 19:25:07 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/13 22:49:11 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include "get_next_line.h"
 
 size_t	ft_strlen(const char *s)
@@ -40,6 +37,19 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 		dst[i] = '\0';
 	}
 	return ((size_t) ft_strlen(src));
+}
+
+char	*ft_strdup(const char *s1)
+{
+	void	*p;
+	size_t	len_s1;
+
+	len_s1 = ft_strlen(s1) + 1;
+	p = (void *)malloc(len_s1 * sizeof(char));
+	if (!p)
+		return (NULL);
+	ft_strlcpy(p, s1, len_s1);
+	return (p);
 }
 
 void	*ft_calloc(size_t count, size_t size)
@@ -101,4 +111,28 @@ char	*ft_strchr(const char *s, int c)
     }
        
 	return (NULL);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	unsigned int	len_s;
+	unsigned int	i;
+	char			*p;
+
+	len_s = ft_strlen(s);
+	i = 0;
+	if (len_s <= start)
+		len = 0;
+	else if (len_s < start + len)
+		len = len_s - start;
+	p = malloc(sizeof(char) * (len + 1));
+	if (!p)
+		return (NULL);
+	while (s[i] && len--)
+	{
+		p[i] = s[start + i];
+		i++;
+	}
+	p[i] = '\0';
+	return (p);
 }
