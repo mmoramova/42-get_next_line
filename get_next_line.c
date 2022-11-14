@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/13 22:55:47 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/14 19:44:20 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,18 @@ char *add_buffer(int fd, char *text)
     while (len_byte != 0 && !ft_strchr(text, '\n') )
     {
         len_byte = read(fd, buffer, BUFFER_SIZE);
-        
+        //printf("NEW BUFFER: %s\n\n", buffer);
         //printf("TEXT BEFORE JOIN: %s\n\n", text);
-        //printf("BUFFER IS: %s\n\n", buffer);
+        //printf("LEN_BYTE: %d\n\n", len_byte);
 
         if (len_byte < 0)
         {
             free(buffer);
             return (NULL); 
         }
-        text = ft_strjoin(text, buffer);
-
+        //printf("BUFFER: %s\n\n", buffer);
+        if (len_byte != 0)
+            text = ft_strjoin(text, buffer);
         //printf("TEXT AFTER JOIN: %s\n\n", text);
     }
     free(buffer);
@@ -50,13 +51,14 @@ char *get_lines(char *text)
     int len;
 
     len = 0;
-    while (text[len] != '\n')
+    while (text[len] && text[len] != '\n')
         len++;
-    len++;
+    if (text[len] == '\n') 
+        len++;
     line = ft_calloc(len + 1, sizeof(char));
     if(!line)
         return(NULL);
-    ft_strlcpy(line, text, len+1);
+    ft_strlcpy(line, text, len + 1);
   return(line);
 }
 
@@ -65,9 +67,6 @@ char *update_text(char *text, size_t len)
     // 3. delete line from buffer
     char *new_text;
 
-    //printf("TEXT BEFORE: %s\n\n", text); 
-    //printf("SIZE OF LINE: %d\n\n", len);
-    //printf("TEXT: %s\n\n", new_text);
     new_text = ft_substr(text, len, ft_strlen(text) - len);
     free(text);
     return (new_text);
@@ -78,31 +77,27 @@ char *get_next_line(int fd)
     char        *line;
     static char *text = NULL;
 
+    if (fd < 0)
+        return (NULL);
     if (!text)
-       text = ft_calloc(3000, sizeof(char));
+      text = ft_calloc(BUFFER_SIZE, sizeof(char));
     
     text = add_buffer(fd, text);
-    if (!text)
+    if (!text || strlen(text) == 0)
+    {
+        free(text);
         return(NULL);
+    }
     line = get_lines(text);
     text = update_text(text, strlen(line));
- 
     return (line);
-}
+}/*
 
-/*int main (int argc, char **argv)
+int main (int argc, char **argv)
 {
     int fd;
     
     fd = open(argv[1], O_RDONLY);
     printf("|%s|\n\n", get_next_line(fd)); 
-    printf("|%s|\n\n", get_next_line(fd)); 
-    printf("|%s|\n\n", get_next_line(fd)); 
-    printf("|%s|\n\n", get_next_line(fd));
-    printf("|%s|\n\n", get_next_line(fd));
-    printf("|%s|\n\n", get_next_line(fd));
-    printf("|%s|\n\n", get_next_line(fd));
-    printf("|%s|\n\n", get_next_line(fd));
-    printf("|%s|\n\n", get_next_line(fd));
     //gcc -Wall -Werror -Wextra -D BUFFER_SIZE=xyz get_next_line.c get_next_line_utils.c && ./a.out
 }*/
