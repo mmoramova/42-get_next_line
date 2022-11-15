@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/14 19:44:20 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/15 22:27:06 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ char *add_buffer(int fd, char *text)
         if (len_byte < 0)
         {
             free(buffer);
+            free(text);
             return (NULL); 
         }
         //printf("BUFFER: %s\n\n", buffer);
-        if (len_byte != 0)
-            text = ft_strjoin(text, buffer);
+        buffer[len_byte] = '\0';
+        text = ft_strjoin(text, buffer);
         //printf("TEXT AFTER JOIN: %s\n\n", text);
     }
     free(buffer);
@@ -77,7 +78,7 @@ char *get_next_line(int fd)
     char        *line;
     static char *text = NULL;
 
-    if (fd < 0)
+    if (fd < 0 || BUFFER_SIZE < 0)
         return (NULL);
     if (!text)
       text = ft_calloc(BUFFER_SIZE, sizeof(char));
@@ -91,8 +92,8 @@ char *get_next_line(int fd)
     line = get_lines(text);
     text = update_text(text, strlen(line));
     return (line);
-}/*
-
+}
+/*
 int main (int argc, char **argv)
 {
     int fd;

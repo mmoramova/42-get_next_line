@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:45:37 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/13 22:49:11 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/15 21:43:23 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		i;
 	char	*p;
 
-	/*if (!s1)
-	{
-		s1 = (char *)malloc(1 * sizeof(char));
-        s1[0] = '\0';
-        return (NULL);
-	}*/
     p = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!p)
 		return (NULL);
@@ -85,7 +79,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2[++j])
 		p[i + j] = s2[j];
 	p[i + j] = '\0';
-    free(s1);
+	if (s1)
+    	free(s1);
 	return (p);
 }
 
@@ -98,8 +93,6 @@ void	ft_bzero(void *s, size_t n)
 		*b++ = '\0';
 }
 
-
-
 char	*ft_strchr(const char *s, int c)
 {
 	while (*s && (*s != (char) c))
@@ -108,8 +101,7 @@ char	*ft_strchr(const char *s, int c)
     {
          s++;
 		return ((char *) s);
-    }
-       
+    }    
 	return (NULL);
 }
 
