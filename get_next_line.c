@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/15 22:27:06 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/20 20:20:50 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,16 +78,19 @@ char *get_next_line(int fd)
     char        *line;
     static char *text = NULL;
 
-    if (fd < 0 || BUFFER_SIZE < 0)
+    if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
     if (!text)
       text = ft_calloc(BUFFER_SIZE, sizeof(char));
     
     text = add_buffer(fd, text);
-    if (!text || strlen(text) == 0)
-    {
-        free(text);
+    if (!text)
         return(NULL);
+    else if (!text[0])
+    {
+       free(text);
+       text = NULL;
+       return(NULL);
     }
     line = get_lines(text);
     text = update_text(text, strlen(line));
