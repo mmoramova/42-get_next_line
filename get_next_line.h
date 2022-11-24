@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 17:07:47 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/13 22:57:29 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/20 22:40:42 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ char *add_buffer(int fd, char *text);
 char *get_lines(char *text);
 char *update_text(char *text, size_t len);
 char *get_next_line(int fd);
+char *ft_free(char **text);
 void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_strdup(const char *s1);

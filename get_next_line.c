@@ -6,11 +6,19 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/20 20:20:50 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/24 20:48:14 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "get_next_line.h"
+
+char *ft_free(char **text)
+{
+    free(*text);
+    *text = NULL;
+    return (NULL);
+}
 
 char *add_buffer(int fd, char *text)
 {
@@ -32,8 +40,10 @@ char *add_buffer(int fd, char *text)
 
         if (len_byte < 0)
         {
-            free(buffer);
-            free(text);
+            //free(buffer);
+            //free(text);
+            ft_free(&buffer);
+            ft_free(&text);
             return (NULL); 
         }
         //printf("BUFFER: %s\n\n", buffer);
@@ -41,7 +51,8 @@ char *add_buffer(int fd, char *text)
         text = ft_strjoin(text, buffer);
         //printf("TEXT AFTER JOIN: %s\n\n", text);
     }
-    free(buffer);
+    //free(buffer);
+    ft_free(&buffer);
     return (text);
 }
 
@@ -69,7 +80,8 @@ char *update_text(char *text, size_t len)
     char *new_text;
 
     new_text = ft_substr(text, len, ft_strlen(text) - len);
-    free(text);
+    //free(text);
+    ft_free(&text);
     return (new_text);
 }
 
@@ -81,15 +93,15 @@ char *get_next_line(int fd)
     if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
     if (!text)
-      text = ft_calloc(BUFFER_SIZE, sizeof(char));
-    
+      text = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+    //if(!text)
+     //   return(NULL);
     text = add_buffer(fd, text);
     if (!text)
         return(NULL);
-    else if (!text[0])
+    if (!text[0])
     {
-       free(text);
-       text = NULL;
+       ft_free(&text);
        return(NULL);
     }
     line = get_lines(text);

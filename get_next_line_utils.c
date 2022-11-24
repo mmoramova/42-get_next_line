@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/13 12:45:37 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/15 21:43:23 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/20 22:40:46 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,8 @@ char	*ft_strjoin(char *s1, char *s2)
 		p[i + j] = s2[j];
 	p[i + j] = '\0';
 	if (s1)
-    	free(s1);
+    	//free(s1);
+		ft_free(&s1);
 	return (p);
 }
 
