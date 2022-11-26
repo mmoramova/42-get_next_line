@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/24 20:48:14 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/26 11:43:23 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,37 +22,24 @@ char *ft_free(char **text)
 
 char *add_buffer(int fd, char *text)
 {
-    // 1. read the file until \n is in the variable text
-    char *buffer;
+    // 1. read the file until \n
+    char buffer[BUFFER_SIZE+1];
     int len_byte;
 
-    buffer = ft_calloc(BUFFER_SIZE+1, sizeof(char));
-    if(!buffer)
-        return(NULL);
-    len_byte = -1;
-
-    while (len_byte != 0 && !ft_strchr(text, '\n') )
+    len_byte = 1;
+    buffer[0] = '\0';
+    while (len_byte > 0 && !ft_strchr(buffer, '\n'))
     {
         len_byte = read(fd, buffer, BUFFER_SIZE);
-        //printf("NEW BUFFER: %s\n\n", buffer);
-        //printf("TEXT BEFORE JOIN: %s\n\n", text);
-        //printf("LEN_BYTE: %d\n\n", len_byte);
 
-        if (len_byte < 0)
+        if(len_byte > 0)
         {
-            //free(buffer);
-            //free(text);
-            ft_free(&buffer);
-            ft_free(&text);
-            return (NULL); 
+            buffer[len_byte] = '\0';
+            text = ft_strjoin(text, buffer);
         }
-        //printf("BUFFER: %s\n\n", buffer);
-        buffer[len_byte] = '\0';
-        text = ft_strjoin(text, buffer);
-        //printf("TEXT AFTER JOIN: %s\n\n", text);
     }
-    //free(buffer);
-    ft_free(&buffer);
+    if (len_byte < 0)
+        return (ft_free(&text)); 
     return (text);
 }
 
@@ -67,20 +54,28 @@ char *get_lines(char *text)
         len++;
     if (text[len] == '\n') 
         len++;
-    line = ft_calloc(len + 1, sizeof(char));
+    line = malloc((len + 1) * sizeof(char));
     if(!line)
         return(NULL);
     ft_strlcpy(line, text, len + 1);
   return(line);
 }
 
-char *update_text(char *text, size_t len)
+char *update_text(char *text)
 {
     // 3. delete line from buffer
     char *new_text;
+    char *end;
+    int len;
 
+    end = ft_strchr(text, '\n');
+    if (!end)
+        return(ft_free(&text));
+    else
+        len = (end - text) + 1;
+    if (!text[len])
+        return(ft_free(&text));
     new_text = ft_substr(text, len, ft_strlen(text) - len);
-    //free(text);
     ft_free(&text);
     return (new_text);
 }
@@ -92,20 +87,14 @@ char *get_next_line(int fd)
 
     if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
-    if (!text)
-      text = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-    //if(!text)
-     //   return(NULL);
-    text = add_buffer(fd, text);
+    if (!text || (text && !ft_strchr(text, '\n')))
+        text = add_buffer(fd, text);
     if (!text)
         return(NULL);
-    if (!text[0])
-    {
-       ft_free(&text);
-       return(NULL);
-    }
     line = get_lines(text);
-    text = update_text(text, strlen(line));
+    if(!line)
+        return (ft_free(&text));
+    text = update_text(text);
     return (line);
 }
 /*
