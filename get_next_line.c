@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/12 17:13:14 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/26 13:50:23 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/26 13:59:15 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!text || ft_strchr(text, '\n'))
+	if (!text || !ft_strchr(text, '\n'))
 		text = add_buffer(fd, text);
 	if (!text)
 		return (NULL);
