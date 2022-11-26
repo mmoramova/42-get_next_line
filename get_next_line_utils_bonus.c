@@ -6,7 +6,7 @@
 /*   By: mmoramov <mmoramov@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 12:11:53 by mmoramov          #+#    #+#             */
-/*   Updated: 2022/11/26 12:20:24 by mmoramov         ###   ########.fr       */
+/*   Updated: 2022/11/26 13:52:38 by mmoramov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		i;
 	char	*p;
 
-    if(!s1)
+	if (!s1)
 	{
 		s1 = malloc(sizeof(char) * 1);
 		if (!s1)
-			return(NULL);
+			return (NULL);
 		s1[0] = '\0';
 	}
 	p = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
